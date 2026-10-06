@@ -62,7 +62,9 @@ filtered_df = df[
 st.markdown("### Key Statistics")
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Requests", len(filtered_df))
-col2.metric("Total Amount (Pcs)", int(filtered_df['Amount (Pcs)'].sum()) if not filtered_df.empty else 0)
+# Convert to numeric, errors='coerce' will turn non-numbers into NaN, then fillna(0) changes NaN to 0
+total_amount = pd.to_numeric(filtered_df['Amount (Pcs)'], errors='coerce').fillna(0).sum()
+col2.metric("Total Amount (Pcs)", int(total_amount) if not filtered_df.empty else 0)
 col3.metric("Total Rusty Cases", filtered_df['Rusty'].sum() if 'Rusty' in filtered_df else 0)
 col4.metric("Divisions Involved", filtered_df['Division'].nunique())
 
